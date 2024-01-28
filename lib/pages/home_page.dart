@@ -354,7 +354,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               label: Text('Navigation Grid'),
             ),
             const NavigationDrawerDestination(
-              icon: Icon(Icons.grid_on),
+              icon: Icon(Icons.grid_view),
               label: Text('Aux Grid'),
             ),
           ],
@@ -654,7 +654,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       if (!value) {
         // Load default grid
         String fileContent = await DefaultAssetBundle.of(this.context)
-            .loadString('resources/default_navgrid.json');
+            .loadString('resources/default_auxgrid.json');
         fs
             .file(join(_pathplannerDir.path, 'auxgrid.json'))
             .writeAsString(fileContent);
