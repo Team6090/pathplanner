@@ -9,6 +9,7 @@ import 'package:macos_secure_bookmarks/macos_secure_bookmarks.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pathplanner/commands/command.dart';
+import 'package:pathplanner/pages/aux_grid_page.dart';
 import 'package:pathplanner/pages/nav_grid_page.dart';
 import 'package:pathplanner/pages/project/project_page.dart';
 import 'package:pathplanner/pages/telemetry_page.dart';
@@ -352,6 +353,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               icon: Icon(Icons.grid_on),
               label: Text('Navigation Grid'),
             ),
+            const NavigationDrawerDestination(
+              icon: Icon(Icons.grid_on),
+              label: Text('Aux Grid'),
+            ),
           ],
         ),
         Align(
@@ -450,6 +455,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   prefs: widget.prefs,
                 ),
                 NavGridPage(
+                  deployDirectory: _pathplannerDir,
+                  fs: fs,
+                  fieldImage: _fieldImage ?? FieldImage.defaultField,
+                ),
+                AuxGridPage(
                   deployDirectory: _pathplannerDir,
                   fs: fs,
                   fieldImage: _fieldImage ?? FieldImage.defaultField,
@@ -635,6 +645,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             .loadString('resources/default_navgrid.json');
         fs
             .file(join(_pathplannerDir.path, 'navgrid.json'))
+            .writeAsString(fileContent);
+      }
+    });
+
+    File auxgridFile = fs.file(join(_pathplannerDir.path, 'auxgrid.json'));
+    auxgridFile.exists().then((value) async {
+      if (!value) {
+        // Load default grid
+        String fileContent = await DefaultAssetBundle.of(this.context)
+            .loadString('resources/default_navgrid.json');
+        fs
+            .file(join(_pathplannerDir.path, 'auxgrid.json'))
             .writeAsString(fileContent);
       }
     });
