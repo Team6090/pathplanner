@@ -335,25 +335,23 @@ class _ProjectPageState extends State<ProjectPage> {
                     setState(() {
                       Point? pos = Waypoint.linked.remove(oldName);
 
-                      if (pos != null) {
-                        Waypoint.linked[newName] = pos;
+                      Waypoint.linked[newName] = pos!;
 
-                        for (PathPlannerPath path in _paths) {
-                          bool changed = false;
+                      for (PathPlannerPath path in _paths) {
+                        bool changed = false;
 
-                          for (Waypoint w in path.waypoints) {
-                            if (w.linkedName == oldName) {
-                              w.linkedName = newName;
-                              changed = true;
-                            }
-                          }
-
-                          if (changed) {
-                            path.generateAndSavePath();
+                        for (Waypoint w in path.waypoints) {
+                          if (w.linkedName == oldName) {
+                            w.linkedName = newName;
+                            changed = true;
                           }
                         }
+
+                        if (changed) {
+                          path.generateAndSavePath();
+                        }
                       }
-                    });
+                                        });
                   },
                   onLinkedDeleted: (String name) {
                     setState(() {

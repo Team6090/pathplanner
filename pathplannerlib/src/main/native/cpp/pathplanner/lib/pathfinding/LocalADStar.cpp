@@ -25,7 +25,9 @@ LocalADStar::LocalADStar() : fieldLength(16.54), fieldWidth(8.02), nodeSize(
 	dynamicObstacles.clear();
 
 	const std::string filePath = frc::filesystem::GetDeployDirectory()
+			+ "/pathplanner/limelightgrid.json";
 			+ "/pathplanner/navgrid.json";
+			+ "/pathplanner/pivotgrid.json";
 
 	std::error_code error_code;
 	std::unique_ptr < wpi::MemoryBuffer > fileBuffer =

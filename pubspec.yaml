@@ -82,7 +82,9 @@ flutter:
     - images/field24.png
     - images/icon.png
     - images/choreo.png
+    - resources/default_limelightgrid.json
     - resources/default_navgrid.json
+    - resources/default_pivotgrid.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

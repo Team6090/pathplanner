@@ -3,18 +3,18 @@ import 'dart:ui';
 import 'package:collection/collection.dart';
 import 'package:pathplanner/widgets/field_image.dart';
 
-class AuxGrid {
+class PivotGrid {
   Size fieldSize;
   num nodeSizeMeters;
   List<List<bool>> grid;
 
-  AuxGrid({
+  PivotGrid({
     required this.fieldSize,
     required this.nodeSizeMeters,
     required this.grid,
   });
 
-  AuxGrid.blankGrid({
+  PivotGrid.blankGrid({
     required this.nodeSizeMeters,
     required this.fieldSize,
   }) : grid = [] {
@@ -24,7 +24,7 @@ class AuxGrid {
     grid = List.generate(rows, (index) => List.filled(cols, false));
   }
 
-  AuxGrid.fromJson(Map<String, dynamic> json)
+  PivotGrid.fromJson(Map<String, dynamic> json)
       : fieldSize = _sizeFromJson(json['field_size']),
         nodeSizeMeters = json['nodeSizeMeters'] ?? 0.2,
         grid = [] {
@@ -66,7 +66,7 @@ class AuxGrid {
 
   @override
   bool operator ==(Object other) =>
-      other is AuxGrid &&
+      other is PivotGrid &&
       other.runtimeType == runtimeType &&
       other.fieldSize == fieldSize &&
       other.nodeSizeMeters == nodeSizeMeters &&

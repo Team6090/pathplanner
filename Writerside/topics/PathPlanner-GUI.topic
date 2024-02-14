@@ -28,8 +28,12 @@
         <secondary>
             <title>Other Pages</title>
             <a href="gui-Telemetry.md" summary="View live path following telemetry">Telemetry</a>
+            <a href="gui-Limelight-Grid-Editor.md" summary="Edit the navigation grid used by pathfinding commands to regulate limelight correction">Navigation
+                grid editor</a>
             <a href="gui-Navigation-Grid-Editor.md" summary="Edit the navigation grid used by pathfinding commands to avoid obstacles">Navigation
                 grid editor</a>
+            <a href="gui-Pivot-Grid-Editor.md" summary="Edit the navigation grid used by pathfinding commands to avoid pivoting mechanisms into obstacles">Navigation
+                grid editor</a>    
         </secondary>
 
     </section-starting-page>

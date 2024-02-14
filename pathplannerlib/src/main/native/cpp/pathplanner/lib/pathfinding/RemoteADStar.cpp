@@ -9,8 +9,12 @@ using namespace pathplanner;
 RemoteADStar::RemoteADStar() {
 	auto nt = nt::NetworkTableInstance::GetDefault();
 
+	m_limelightGridJsonPub = nt.GetStringTopic(
+			"/PPLibCoprocessor/RemoteADStar/limelightGrid").Publish();
 	m_navGridJsonPub = nt.GetStringTopic(
 			"/PPLibCoprocessor/RemoteADStar/navGrid").Publish();
+	m_pivotGridJsonPub = nt.GetStringTopic(
+			"/PPLibCoprocessor/RemoteADStar/pivotGrid").Publish();				
 	m_startPosPub = nt.GetDoubleArrayTopic(
 			"/PPLibCoprocessor/RemoteADStar/startPos").Publish();
 	m_goalPosPub = nt.GetDoubleArrayTopic(
@@ -45,7 +49,9 @@ RemoteADStar::RemoteADStar() {
 			);
 
 	const std::string filePath = frc::filesystem::GetDeployDirectory()
+			+ "/pathplanner/limelightgrid.json";
 			+ "/pathplanner/navgrid.json";
+			+ "/pathplanner/pivotgrid.json";
 
 	std::error_code error_code;
 	std::unique_ptr < wpi::MemoryBuffer > fileBuffer =
@@ -53,10 +59,12 @@ RemoteADStar::RemoteADStar() {
 
 	if (error_code) {
 		FRC_ReportError(frc::err::Error,
-				"RemoteADStar failed to load navgrid. Pathfinding will not be functional.");
+				"RemoteADStar failed to load grid(s). Pathfinding will not be functional.");
 	} else {
 		auto charBuffer = fileBuffer->GetCharBuffer();
+		m_limelightGridJsonPub.Set(std::string(charBuffer.begin(), charBuffer.end()));
 		m_navGridJsonPub.Set(std::string(charBuffer.begin(), charBuffer.end()));
+		m_pivotGridJsonPub.Set(std::string(charBuffer.begin(), charBuffer.end()));
 	}
 
 	m_newPathAvailable = false;

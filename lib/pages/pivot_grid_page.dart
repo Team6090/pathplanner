@@ -5,17 +5,17 @@ import 'package:file/file.dart';
 import 'package:flutter/material.dart';
 import 'package:function_tree/function_tree.dart';
 import 'package:path/path.dart';
-import 'package:pathplanner/pathfinding/aux_grid.dart';
+import 'package:pathplanner/pathfinding/pivot_grid.dart';
 import 'package:pathplanner/widgets/field_image.dart';
 import 'package:pathplanner/util/path_painter_util.dart';
 import 'package:pathplanner/widgets/number_text_field.dart';
 
-class AuxGridPage extends StatefulWidget {
+class PivotGridPage extends StatefulWidget {
   final Directory deployDirectory;
   final FieldImage fieldImage;
   final FileSystem fs;
 
-  const AuxGridPage({
+  const PivotGridPage({
     super.key,
     required this.deployDirectory,
     required this.fs,
@@ -23,26 +23,26 @@ class AuxGridPage extends StatefulWidget {
   });
 
   @override
-  State<AuxGridPage> createState() => _AuxGridPageState();
+  State<PivotGridPage> createState() => _PivotGridPageState();
 }
 
-class _AuxGridPageState extends State<AuxGridPage> {
+class _PivotGridPageState extends State<PivotGridPage> {
   bool _loading = true;
   bool _adding = true;
-  late AuxGrid _grid;
+  late PivotGrid _grid;
 
   @override
   void initState() {
     super.initState();
 
     File gridFile =
-        widget.fs.file(join(widget.deployDirectory.path, 'AuxGrid.json'));
+        widget.fs.file(join(widget.deployDirectory.path, 'PivotGrid.json'));
     gridFile.exists().then((value) async {
       if (value) {
         String fileContent = gridFile.readAsStringSync();
         Map<String, dynamic> json = jsonDecode(fileContent);
         setState(() {
-          _grid = AuxGrid.fromJson(json);
+          _grid = PivotGrid.fromJson(json);
           _loading = false;
         });
       }
@@ -77,7 +77,7 @@ class _AuxGridPageState extends State<AuxGridPage> {
                     _grid.grid[row][col] = !_grid.grid[row][col];
                   });
 
-                  _saveAuxGrid();
+                  _savePivotGrid();
                 }
               },
               onPanStart: (details) {
@@ -111,7 +111,7 @@ class _AuxGridPageState extends State<AuxGridPage> {
                 }
               },
               onPanEnd: (_) {
-                _saveAuxGrid();
+                _savePivotGrid();
               },
               child: Padding(
                 padding: const EdgeInsets.all(48),
@@ -199,7 +199,7 @@ class _AuxGridPageState extends State<AuxGridPage> {
                 ),
                 const SizedBox(height: 32),
                 const Text(
-                    'Note: Changing these attributes will clear the AuxGrid. This cannot be undone.'),
+                    'Note: Changing these attributes will clear the Pivot Grid. This cannot be undone.'),
               ],
             ),
           ),
@@ -207,12 +207,12 @@ class _AuxGridPageState extends State<AuxGridPage> {
             TextButton(
               onPressed: () async {
                 String fileContent = await DefaultAssetBundle.of(this.context)
-                    .loadString('resources/default_AuxGrid.json');
+                    .loadString('resources/default_PivotGrid.json');
 
                 setState(() {
-                  _grid = AuxGrid.fromJson(jsonDecode(fileContent));
+                  _grid = PivotGrid.fromJson(jsonDecode(fileContent));
                 });
-                _saveAuxGrid();
+                _savePivotGrid();
 
                 if (mounted) {
                   Navigator.of(context).pop();
@@ -230,13 +230,13 @@ class _AuxGridPageState extends State<AuxGridPage> {
                   num fieldWidth = fieldWidthController.text.interpret();
 
                   setState(() {
-                    _grid = AuxGrid.blankGrid(
+                    _grid = PivotGrid.blankGrid(
                       nodeSizeMeters: nodeSize,
                       fieldSize:
                           Size(fieldLength.toDouble(), fieldWidth.toDouble()),
                     );
                   });
-                  _saveAuxGrid();
+                  _savePivotGrid();
                   Navigator.of(context).pop();
                 }
               },
@@ -259,9 +259,9 @@ class _AuxGridPageState extends State<AuxGridPage> {
         widget.fieldImage.pixelsPerMeter;
   }
 
-  void _saveAuxGrid() {
+  void _savePivotGrid() {
     widget.fs
-        .file(join(widget.deployDirectory.path, 'AuxGrid.json'))
+        .file(join(widget.deployDirectory.path, 'PivotGrid.json'))
         .writeAsString(jsonEncode(_grid));
   }
 }

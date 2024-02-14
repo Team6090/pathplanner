@@ -37,7 +37,9 @@ public:
 			const frc::Translation2d &currentRobotPos) override;
 
 private:
+	nt::StringPublisher m_limelightGridJsonPub;
 	nt::StringPublisher m_navGridJsonPub;
+	nt::StringPublisher m_pivotGridJsonPub;
 	nt::DoubleArrayPublisher m_startPosPub;
 	nt::DoubleArrayPublisher m_goalPosPub;
 	nt::DoubleArrayPublisher m_dynamicObsPub;

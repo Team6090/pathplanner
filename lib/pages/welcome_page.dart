@@ -119,8 +119,6 @@ class WelcomePage extends StatelessWidget {
 
     if (!context.mounted) return;
 
-    if (projectFolder != null) {
-      Navigator.pop(context, projectFolder);
+    Navigator.pop(context, projectFolder);
     }
-  }
 }

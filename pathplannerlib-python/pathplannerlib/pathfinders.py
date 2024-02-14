@@ -64,7 +64,9 @@ class Pathfinder:
 
 
 class RemoteADStar(Pathfinder):
+    _limelightGridJsonPub: StringPublisher
     _navGridJsonPub: StringPublisher
+    _pivotGridJsonPub: StringPublisher
     _startPosPub: DoubleArrayPublisher
     _goalPosPub: DoubleArrayPublisher
     _dynamicObstaclePub: DoubleArrayPublisher
@@ -77,7 +79,9 @@ class RemoteADStar(Pathfinder):
     def __init__(self):
         nt = NetworkTableInstance.getDefault()
 
+        self._limelightGridJsonPub = nt.getStingTopic('/PPLibCoprocessor/RemoteADStar/limelightGrid').publish()
         self._navGridJsonPub = nt.getStringTopic('/PPLibCoprocessor/RemoteADStar/navGrid').publish()
+        self._pivotGridJsonPub = nt.getStringTopic('/PPLibCoprocessor/RemoteADStar/pivotGrid').publish()
         self._startPosPub = nt.getDoubleArrayTopic('/PPLibCoprocessor/RemoteADStar/startPos').publish()
         self._goalPosPub = nt.getDoubleArrayTopic('/PPLibCoprocessor/RemoteADStar/goalPos').publish()
         self._dynamicObstaclePub = nt.getDoubleArrayTopic('/PPLibCoprocessor/RemoteADStar/dynamicObstacles').publish()
@@ -88,12 +92,16 @@ class RemoteADStar(Pathfinder):
                                                                                                                 keepDuplicates=True))
 
         nt.addListener(self._pathPointsSub, EventFlags.kValueAll, self._handlePathListenerEvent)
-
-        filePath = os.path.join(getDeployDirectory(), 'pathplanner', 'navgrid.json')
+        
+        limelightFilePath = os.path.join(getDeployDirectory(), 'pathplanner', 'limelightgrid.json')
+        navFilePath = os.path.join(getDeployDirectory(), 'pathplanner', 'navgrid.json')
+        pivotFilePath = os.path.join(getDeployDirectory(), 'pathplanner', 'pivotgrid.json')
 
         with open(filePath, 'r') as f:
             file_content = f.read()
+            self._limelightGridJsonPub.set(file_content)
             self._navGridJsonPub.set(file_content)
+            self._pivotGridJsonPub.set(file_content)
 
     def _handlePathListenerEvent(self, event):
         pathPointsArr = self._pathPointsSub.get()
@@ -239,7 +247,33 @@ class LocalADStar(Pathfinder):
         self._dynamicObstacles.clear()
 
         try:
-            filePath = os.path.join(getDeployDirectory(), 'pathplanner', 'navgrid.json')
+            limelightFilePath = os.path.join(getDeployDirectory(), 'pathplanner', 'limelightgrid.json')
+
+            with open(filePath, 'r') as f:
+                limelightgrid_json = json.loads(f.read())
+
+                self._nodeSize = float(limelightgrid_json['nodeSizeMeters'])
+                grid = limelightgrid_json['grid']
+
+                self._nodesY = len(grid)
+                for row in range(len(grid)):
+                    rowArr = grid[row]
+                    if row == 0:
+                        self._nodesX = len(rowArr)
+                    for col in range(len(rowArr)):
+                        isObstacle = rowArr[col]
+                        if isObstacle:
+                            self._staticObstacles.add(GridPosition(col, row))
+
+                fieldSize = limelightgrid_json['field_size']
+                self._fieldLength = fieldSize['x']
+                self._fieldWidth = fieldSize['y']
+        except:
+            # Do nothing, use defaults
+            pass
+
+        try:
+            navFilePath = os.path.join(getDeployDirectory(), 'pathplanner', 'navgrid.json')
 
             with open(filePath, 'r') as f:
                 navgrid_json = json.loads(f.read())
@@ -264,6 +298,32 @@ class LocalADStar(Pathfinder):
             # Do nothing, use defaults
             pass
 
+        try:
+            pivotFilePath = os.path.join(getDeployDirectory(), 'pathplanner', 'pivotgrid.json')
+
+            with open(filePath, 'r') as f:
+                pivotgrid_json = json.loads(f.read())
+
+                self._nodeSize = float(pivotgrid_json['nodeSizeMeters'])
+                grid = pivotgrid_json['grid']
+
+                self._nodesY = len(grid)
+                for row in range(len(grid)):
+                    rowArr = grid[row]
+                    if row == 0:
+                        self._nodesX = len(rowArr)
+                    for col in range(len(rowArr)):
+                        isObstacle = rowArr[col]
+                        if isObstacle:
+                            self._staticObstacles.add(GridPosition(col, row))
+
+                fieldSize = pivotgrid_json['field_size']
+                self._fieldLength = fieldSize['x']
+                self._fieldWidth = fieldSize['y']
+        except:
+            # Do nothing, use defaults
+            pass
+
         self._requestObstacles.clear()
         self._requestObstacles.update(self._staticObstacles)
         self._requestObstacles.update(self._dynamicObstacles)
@@ -275,6 +335,8 @@ class LocalADStar(Pathfinder):
         self._newPathAvailable = False
 
         self._planningThread.start()
+
+  
 
     def isNewPathAvailable(self) -> bool:
         """

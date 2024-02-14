@@ -20,7 +20,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /** Implementation of ADStar running on a coprocessor */
 public class RemoteADStar implements Pathfinder {
+  private final StringPublisher limelightGridJsonPub;
   private final StringPublisher navGridJsonPub;
+  private final StringPublisher pivotGridJsonPub;
   private final DoubleArrayPublisher startPosPub;
   private final DoubleArrayPublisher goalPosPub;
   private final DoubleArrayPublisher dynamicObsPub;
@@ -35,7 +37,9 @@ public class RemoteADStar implements Pathfinder {
   public RemoteADStar() {
     var nt = NetworkTableInstance.getDefault();
 
+    limelightGridJsonPub = nt.getStringTopic("/PPLibCoprocessor/RemoteADStar/limelightGrid").publish();
     navGridJsonPub = nt.getStringTopic("/PPLibCoprocessor/RemoteADStar/navGrid").publish();
+    pivotGridJsonPub = nt.getStringTopic("/PPLibCoprocessor/RemoteADStar/pivotGrid").publish();
     startPosPub = nt.getDoubleArrayTopic("/PPLibCoprocessor/RemoteADStar/startPos").publish();
     goalPosPub = nt.getDoubleArrayTopic("/PPLibCoprocessor/RemoteADStar/goalPos").publish();
     dynamicObsPub =
@@ -62,6 +66,23 @@ public class RemoteADStar implements Pathfinder {
           newPathAvailable.set(true);
         });
 
+    File limelightGridFile = new File(Filesystem.getDeployDirectory(), "pathplanner/limelightgrid.json");
+    if (limelightGridFile.exists()) {
+      try (BufferedReader br = new BufferedReader(new FileReader(limelightGridFile))) {
+        StringBuilder fileContentBuilder = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+          fileContentBuilder.append(line);
+        }
+
+        String fileContent = fileContentBuilder.toString();
+        limelightGridJsonPub.set(fileContent);
+      } catch (Exception e) {
+        DriverStation.reportError(
+            "RemoteADStar failed to load limelightgrid. Pathfinding will not be functional.", false);
+      }
+    }
+
     File navGridFile = new File(Filesystem.getDeployDirectory(), "pathplanner/navgrid.json");
     if (navGridFile.exists()) {
       try (BufferedReader br = new BufferedReader(new FileReader(navGridFile))) {
@@ -78,6 +99,24 @@ public class RemoteADStar implements Pathfinder {
             "RemoteADStar failed to load navgrid. Pathfinding will not be functional.", false);
       }
     }
+
+    File pivotGridFile = new File(Filesystem.getDeployDirectory(), "pathplanner/pivotgrid.json");
+    if (pivotGridFile.exists()) {
+      try (BufferedReader br = new BufferedReader(new FileReader(pivotGridFile))) {
+        StringBuilder fileContentBuilder = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+          fileContentBuilder.append(line);
+        }
+
+        String fileContent = fileContentBuilder.toString();
+        pivotGridJsonPub.set(fileContent);
+      } catch (Exception e) {
+        DriverStation.reportError(
+            "RemoteADStar failed to load pivotgrid. Pathfinding will not be functional.", false);
+      }
+    }
+
   }
 
   /**

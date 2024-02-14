@@ -9,7 +9,8 @@ import 'package:macos_secure_bookmarks/macos_secure_bookmarks.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pathplanner/commands/command.dart';
-import 'package:pathplanner/pages/aux_grid_page.dart';
+import 'package:pathplanner/pages/limelight_grid_page.dart';
+import 'package:pathplanner/pages/pivot_grid_page.dart';
 import 'package:pathplanner/pages/nav_grid_page.dart';
 import 'package:pathplanner/pages/project/project_page.dart';
 import 'package:pathplanner/pages/telemetry_page.dart';
@@ -81,7 +82,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     _loadFieldImages().then((_) async {
       String? projectDir = widget.prefs.getString(PrefsKeys.currentProjectDir);
-      if (projectDir != null && Platform.isMacOS && fs is LocalFileSystem) {
+      if (Platform.isMacOS && fs is LocalFileSystem) {
         if (widget.prefs.getString(PrefsKeys.macOSBookmark) != null) {
           try {
             await _bookmarks!.resolveBookmark(
@@ -119,17 +120,68 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
         String? selectedFieldName =
             widget.prefs.getString(PrefsKeys.fieldImage);
-        if (selectedFieldName != null) {
-          for (FieldImage image in _fieldImages) {
-            if (image.name == selectedFieldName) {
-              _fieldImage = image;
-              break;
-            }
+        for (FieldImage image in _fieldImages) {
+          if (image.name == selectedFieldName) {
+            _fieldImage = image;
+            break;
           }
         }
-      });
+            });
 
       _animController.forward();
+
+      if (!(widget.prefs.getBool(PrefsKeys.seen2024ResetPopup) ?? false) &&
+          _fieldImage?.name != 'Crescendo' &&
+          mounted) {
+        showDialog(
+          context: this.context,
+          barrierDismissible: false,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('New Field Image Available'),
+              content: const SizedBox(
+                width: 400,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                        'The 2024 field image is now available. Would you like to set your field image to the 2024 field and reset the default limelightgrid for the 2024 field?'),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    widget.prefs.setBool(PrefsKeys.seen2024ResetPopup, true);
+                  },
+                  child: const Text('No'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    widget.prefs.setBool(PrefsKeys.seen2024ResetPopup, true);
+                    setState(() {
+                      _fieldImage = FieldImage.defaultField;
+                      widget.prefs
+                          .setString(PrefsKeys.fieldImage, _fieldImage!.name);
+                    });
+
+                    // Load default grid
+                    String fileContent =
+                        await DefaultAssetBundle.of(this.context)
+                            .loadString('resources/default_limelightgrid.json');
+                    fs
+                        .file(join(_pathplannerDir.path, 'limelightgrid.json'))
+                        .writeAsString(fileContent);
+                  },
+                  child: const Text('Yes (Recommended)'),
+                ),
+              ],
+            );
+          },
+        );
+      }
 
       if (!(widget.prefs.getBool(PrefsKeys.seen2024ResetPopup) ?? false) &&
           _fieldImage?.name != 'Crescendo' &&
@@ -174,6 +226,59 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             .loadString('resources/default_navgrid.json');
                     fs
                         .file(join(_pathplannerDir.path, 'navgrid.json'))
+                        .writeAsString(fileContent);
+                  },
+                  child: const Text('Yes (Recommended)'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+
+      if (!(widget.prefs.getBool(PrefsKeys.seen2024ResetPopup) ?? false) &&
+          _fieldImage?.name != 'Crescendo' &&
+          mounted) {
+        showDialog(
+          context: this.context,
+          barrierDismissible: false,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('New Field Image Available'),
+              content: const SizedBox(
+                width: 400,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                        'The 2024 field image is now available. Would you like to set your field image to the 2024 field and reset the default pivotgrid for the 2024 field?'),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    widget.prefs.setBool(PrefsKeys.seen2024ResetPopup, true);
+                  },
+                  child: const Text('No'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    widget.prefs.setBool(PrefsKeys.seen2024ResetPopup, true);
+                    setState(() {
+                      _fieldImage = FieldImage.defaultField;
+                      widget.prefs
+                          .setString(PrefsKeys.fieldImage, _fieldImage!.name);
+                    });
+
+                    // Load default grid
+                    String fileContent =
+                        await DefaultAssetBundle.of(this.context)
+                            .loadString('resources/default_pivotgrid.json');
+                    fs
+                        .file(join(_pathplannerDir.path, 'pivotgrid.json'))
                         .writeAsString(fileContent);
                   },
                   child: const Text('Yes (Recommended)'),
@@ -354,8 +459,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               label: Text('Navigation Grid'),
             ),
             const NavigationDrawerDestination(
-              icon: Icon(Icons.grid_view),
-              label: Text('Aux Grid'),
+              icon: Icon(Icons.refresh),
+              label: Text('Pivot Grid'),
+            ),
+            const NavigationDrawerDestination(
+              icon: Icon(Icons.camera_alt),
+              label: Text('Limelight Grid'),
             ),
           ],
         ),
@@ -459,11 +568,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   fs: fs,
                   fieldImage: _fieldImage ?? FieldImage.defaultField,
                 ),
-                AuxGridPage(
+                PivotGridPage(
                   deployDirectory: _pathplannerDir,
                   fs: fs,
                   fieldImage: _fieldImage ?? FieldImage.defaultField,
                 ),
+                LimelightGridPage(
+                  deployDirectory: _pathplannerDir,
+                  fs: fs,
+                  fieldImage: _fieldImage ?? FieldImage.defaultField,
+                ),             
               ],
             ),
           ),
@@ -606,10 +720,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     String initialDirectory = _projectDir?.path ?? fs.currentDirectory.path;
     String? projectFolder = await getDirectoryPath(
         confirmButtonText: 'Open Project', initialDirectory: initialDirectory);
-    if (projectFolder != null) {
-      _initFromProjectDir(projectFolder);
+    _initFromProjectDir(projectFolder!);
     }
-  }
 
   void _initFromProjectDir(String projectDir) async {
     widget.prefs.setString(PrefsKeys.currentProjectDir, projectDir);
@@ -649,15 +761,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       }
     });
 
-    File auxgridFile = fs.file(join(_pathplannerDir.path, 'auxgrid.json'));
-    auxgridFile.exists().then((value) async {
+    File pivotgridFile = fs.file(join(_pathplannerDir.path, 'pivotgrid.json'));
+    pivotgridFile.exists().then((value) async {
       if (!value) {
         // Load default grid
         String fileContent = await DefaultAssetBundle.of(this.context)
-            .loadString('resources/default_auxgrid.json');
+            .loadString('resources/default_pivotgrid.json');
         fs
-            .file(join(_pathplannerDir.path, 'auxgrid.json'))
+            .file(join(_pathplannerDir.path, 'pivotgrid.json'))
             .writeAsString(fileContent);
+      }
+    });
+
+    File limelightgridFile = fs.file(join(_pathplannerDir.path, 'limelightgrid.json'));
+    limelightgridFile.exists().then((value) async {
+      if (!value) {
+        String fileContent = await DefaultAssetBundle.of(this.context)
+        .loadString('resources/default_limelightgrid.json;');
+        fs
+        .file(join(_pathplannerDir.path, 'limelightgrid.json'))
+        .writeAsString(fileContent);
+
       }
     });
 

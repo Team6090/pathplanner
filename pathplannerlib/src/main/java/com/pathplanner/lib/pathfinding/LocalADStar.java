@@ -110,6 +110,42 @@ public class LocalADStar implements Pathfinder {
       }
     }
 
+    File pivotGridFile = new File(Filesystem.getDeployDirectory(), "pathplanner/pivotgrid.json");
+    if (pivotGridFile.exists()) {
+      try (BufferedReader br = new BufferedReader(new FileReader(pivotGridFile))) {
+        StringBuilder fileContentBuilder = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+          fileContentBuilder.append(line);
+        }
+
+        String fileContent = fileContentBuilder.toString();
+        JSONObject json = (JSONObject) new JSONParser().parse(fileContent);
+
+        nodeSize = ((Number) json.get("nodeSizeMeters")).doubleValue();
+        JSONArray grid = (JSONArray) json.get("grid");
+        nodesY = grid.size();
+        for (int row = 0; row < grid.size(); row++) {
+          JSONArray rowArray = (JSONArray) grid.get(row);
+          if (row == 0) {
+            nodesX = rowArray.size();
+          }
+          for (int col = 0; col < rowArray.size(); col++) {
+            boolean isObstacle = (boolean) rowArray.get(col);
+            if (isObstacle) {
+              staticObstacles.add(new GridPosition(col, row));
+            }
+          }
+        }
+
+        JSONObject fieldSize = (JSONObject) json.get("field_size");
+        fieldLength = ((Number) fieldSize.get("x")).doubleValue();
+        fieldWidth = ((Number) fieldSize.get("y")).doubleValue();
+      } catch (Exception e) {
+        // Do nothing, use defaults
+      }
+    }
+
     requestObstacles.clear();
     requestObstacles.addAll(staticObstacles);
     requestObstacles.addAll(dynamicObstacles);
