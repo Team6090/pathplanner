@@ -50,8 +50,10 @@ void main() async {
       // Ensure saved host is an IP
       try {
         String? hostIP = prefs.getString(PrefsKeys.ntServerAddress);
-        Uri.parseIPv4Address(hostIP!);
-            } catch (_) {
+        if (hostIP != null) {
+          Uri.parseIPv4Address(hostIP);
+        }
+      } catch (_) {
         // Not a valid IP, reset to default
         prefs.setString(PrefsKeys.ntServerAddress, Defaults.ntServerAddress);
       }
