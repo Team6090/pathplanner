@@ -40,14 +40,14 @@ void main() {
   testWidgets('pivotgrid editor shows when file', (widgetTester) async {
     var fs = MemoryFileSystem();
     fs.directory(deployPath).createSync(recursive: true);
-    PivotGrid grid = PivotGrid(
+    PivotGrid pivotGrid = PivotGrid(
         fieldSize: const Size(16.54, 8.02),
         nodeSizeMeters: 0.2,
-        grid: List.generate((8.02 / 0.2).ceil(),
+        pivotGrid: List.generate((8.02 / 0.2).ceil(),
             (index) => List.filled((16.54 / 0.2).ceil(), false)));
     fs
         .file(join(deployPath, 'pivotgrid.json'))
-        .writeAsStringSync(jsonEncode(grid));
+        .writeAsStringSync(jsonEncode(pivotGrid));
 
     await widgetTester.pumpWidget(MaterialApp(
       home: Scaffold(
@@ -67,14 +67,14 @@ void main() {
   testWidgets('pivotgrid editor tap', (widgetTester) async {
     var fs = MemoryFileSystem();
     fs.directory(deployPath).createSync(recursive: true);
-    PivotGrid grid = PivotGrid(
+    PivotGrid pivotGrid = PivotGrid(
         fieldSize: const Size(16.54, 8.02),
         nodeSizeMeters: 0.2,
-        grid: List.generate((8.02 / 0.2).ceil(),
+        pivotGrid: List.generate((8.02 / 0.2).ceil(),
             (index) => List.filled((16.54 / 0.2).ceil(), false)));
     fs
         .file(join(deployPath, 'pivotgrid.json'))
-        .writeAsStringSync(jsonEncode(grid));
+        .writeAsStringSync(jsonEncode(pivotGrid));
 
     await widgetTester.pumpWidget(MaterialApp(
       home: Scaffold(
@@ -92,20 +92,20 @@ void main() {
 
     PivotGrid editedGrid = PivotGrid.fromJson(jsonDecode(
         fs.file(join(deployPath, 'pivotgrid.json')).readAsStringSync()));
-    expect(editedGrid, isNot(grid));
+    expect(editedGrid, isNot(pivotGrid));
   });
 
   testWidgets('pivotgrid editor drag', (widgetTester) async {
     var fs = MemoryFileSystem();
     fs.directory(deployPath).createSync(recursive: true);
-    PivotGrid grid = PivotGrid(
+    PivotGrid pivotGrid = PivotGrid(
         fieldSize: const Size(16.54, 8.02),
         nodeSizeMeters: 0.2,
-        grid: List.generate((8.02 / 0.2).ceil(),
+        pivotGrid: List.generate((8.02 / 0.2).ceil(),
             (index) => List.filled((16.54 / 0.2).ceil(), false)));
     fs
         .file(join(deployPath, 'pivotgrid.json'))
-        .writeAsStringSync(jsonEncode(grid));
+        .writeAsStringSync(jsonEncode(pivotGrid));
 
     await widgetTester.pumpWidget(MaterialApp(
       home: Scaffold(
@@ -131,20 +131,20 @@ void main() {
 
     PivotGrid editedGrid = PivotGrid.fromJson(jsonDecode(
         fs.file(join(deployPath, 'pivotgrid.json')).readAsStringSync()));
-    expect(editedGrid, isNot(grid));
+    expect(editedGrid, isNot(pivotGrid));
   });
 
-  testWidgets('edit grid attributes', (widgetTester) async {
+  testWidgets('edit pivotGrid attributes', (widgetTester) async {
     var fs = MemoryFileSystem();
     fs.directory(deployPath).createSync(recursive: true);
-    PivotGrid grid = PivotGrid(
+    PivotGrid pivotGrid = PivotGrid(
         fieldSize: const Size(16.54, 8.02),
         nodeSizeMeters: 0.2,
-        grid: List.generate((8.02 / 0.2).ceil(),
+        pivotGrid: List.generate((8.02 / 0.2).ceil(),
             (index) => List.filled((16.54 / 0.2).ceil(), false)));
     fs
         .file(join(deployPath, 'pivotgrid.json'))
-        .writeAsStringSync(jsonEncode(grid));
+        .writeAsStringSync(jsonEncode(pivotGrid));
 
     await widgetTester.pumpWidget(MaterialApp(
       home: Scaffold(

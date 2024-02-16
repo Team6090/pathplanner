@@ -10,17 +10,17 @@ void main() {
     LimelightGrid grid1 = LimelightGrid(
         fieldSize: const Size(16.54, 8.02),
         nodeSizeMeters: 0.2,
-        grid: List.generate((8.02 / 0.2).ceil(),
+        limelightGrid: List.generate((8.02 / 0.2).ceil(),
             (index) => List.filled((16.54 / 0.2).ceil(), false)));
     LimelightGrid grid2 = LimelightGrid(
         fieldSize: const Size(16.54, 8.02),
         nodeSizeMeters: 0.2,
-        grid: List.generate((8.02 / 0.2).ceil(),
+        limelightGrid: List.generate((8.02 / 0.2).ceil(),
             (index) => List.filled((16.54 / 0.2).ceil(), false)));
     LimelightGrid grid3 = LimelightGrid(
         fieldSize: const Size(16.54, 8.02),
         nodeSizeMeters: 0.2,
-        grid: List.generate((8.02 / 0.2).ceil(),
+        limelightGrid: List.generate((8.02 / 0.2).ceil(),
             (index) => List.filled((16.54 / 0.2).ceil(), true)));
 
     expect(grid2, grid1);
@@ -30,24 +30,24 @@ void main() {
   });
 
   test('toJson/fromJson interoperability', () {
-    LimelightGrid grid = LimelightGrid(
+    LimelightGrid limelightGrid = LimelightGrid(
         fieldSize: const Size(16.54, 8.02),
         nodeSizeMeters: 0.2,
-        grid: List.generate((8.02 / 0.2).ceil(),
+        limelightGrid: List.generate((8.02 / 0.2).ceil(),
             (index) => List.filled((16.54 / 0.2).ceil(), false)));
 
-    Map<String, dynamic> json = grid.toJson();
+    Map<String, dynamic> json = limelightGrid.toJson();
     LimelightGrid fromJson = LimelightGrid.fromJson(json);
 
-    expect(fromJson, grid);
+    expect(fromJson, limelightGrid);
   });
 
   test('bad data replaced', () {
     List<List<bool>> badGrid = List.generate((4.02 / 0.2).ceil(),
         (index) => List.filled((14.54 / 0.2).ceil(), true));
-    LimelightGrid grid = LimelightGrid(
-        fieldSize: const Size(16.54, 8.02), nodeSizeMeters: 0.2, grid: badGrid);
-    Map<String, dynamic> json = grid.toJson();
+    LimelightGrid limelightGrid = LimelightGrid(
+        fieldSize: const Size(16.54, 8.02), nodeSizeMeters: 0.2, limelightGrid: badGrid);
+    Map<String, dynamic> json = limelightGrid.toJson();
     json.remove('field_size');
     LimelightGrid fromJson = LimelightGrid.fromJson(json);
 
@@ -56,8 +56,8 @@ void main() {
     expect(fromJson.fieldSize.height,
         closeTo(FieldImage.defaultField.getFieldSizeMeters().height, 0.01));
     expect(
-        const DeepCollectionEquality().equals(badGrid, fromJson.grid), false);
-    for (var row in fromJson.grid) {
+        const DeepCollectionEquality().equals(badGrid, fromJson.limelightGrid), false);
+    for (var row in fromJson.limelightGrid) {
       for (var node in row) {
         expect(node, false);
       }

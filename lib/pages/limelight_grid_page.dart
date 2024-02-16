@@ -70,11 +70,11 @@ class _LimelightGridPageState extends State<LimelightGridPage> {
                 int col = (x / _grid.nodeSizeMeters).floor();
 
                 if (row >= 0 &&
-                    row < _grid.grid.length &&
+                    row < _grid.limelightGrid.length &&
                     col >= 0 &&
-                    col < _grid.grid[row].length) {
+                    col < _grid.limelightGrid[row].length) {
                   setState(() {
-                    _grid.grid[row][col] = !_grid.grid[row][col];
+                    _grid.limelightGrid[row][col] = !_grid.limelightGrid[row][col];
                   });
 
                   _saveLimelightGrid();
@@ -88,10 +88,10 @@ class _LimelightGridPageState extends State<LimelightGridPage> {
                 int col = (x / _grid.nodeSizeMeters).floor();
 
                 if (row >= 0 &&
-                    row < _grid.grid.length &&
+                    row < _grid.limelightGrid.length &&
                     col >= 0 &&
-                    col < _grid.grid[row].length) {
-                  _adding = !_grid.grid[row][col];
+                    col < _grid.limelightGrid[row].length) {
+                  _adding = !_grid.limelightGrid[row][col];
                 }
               },
               onPanUpdate: (details) {
@@ -102,11 +102,11 @@ class _LimelightGridPageState extends State<LimelightGridPage> {
                 int col = (x / _grid.nodeSizeMeters).floor();
 
                 if (row >= 0 &&
-                    row < _grid.grid.length &&
+                    row < _grid.limelightGrid.length &&
                     col >= 0 &&
-                    col < _grid.grid[row].length) {
+                    col < _grid.limelightGrid[row].length) {
                   setState(() {
-                    _grid.grid[row][col] = _adding;
+                    _grid.limelightGrid[row][col] = _adding;
                   });
                 }
               },
@@ -122,7 +122,7 @@ class _LimelightGridPageState extends State<LimelightGridPage> {
                       child: CustomPaint(
                         painter: _NavigationPainter(
                           fieldImage: widget.fieldImage,
-                          grid: _grid.grid,
+                          limelightGrid: _grid.limelightGrid,
                           nodeSizeMeters: _grid.nodeSizeMeters,
                         ),
                       ),
@@ -270,13 +270,13 @@ class _NavigationPainter extends CustomPainter {
   final FieldImage fieldImage;
 
   final num nodeSizeMeters;
-  final List<List<bool>> grid;
+  final List<List<bool>> limelightGrid;
 
   static double scale = 1;
 
   _NavigationPainter({
     required this.fieldImage,
-    required this.grid,
+    required this.limelightGrid,
     required this.nodeSizeMeters,
   });
 
@@ -292,8 +292,8 @@ class _NavigationPainter extends CustomPainter {
       ..style = PaintingStyle.fill
       ..color = Colors.red.withOpacity(0.4);
 
-    for (int row = 0; row < grid.length; row++) {
-      for (int col = 0; col < grid[row].length; col++) {
+    for (int row = 0; row < limelightGrid.length; row++) {
+      for (int col = 0; col < limelightGrid[row].length; col++) {
         Offset tl = PathPainterUtil.pointToPixelOffset(
             Point(col * nodeSizeMeters, row * nodeSizeMeters),
             scale,
@@ -303,7 +303,7 @@ class _NavigationPainter extends CustomPainter {
             scale,
             fieldImage);
 
-        if (grid[row][col]) {
+        if (limelightGrid[row][col]) {
           canvas.drawRect(Rect.fromPoints(tl, br), fillPaint);
         }
         canvas.drawRect(Rect.fromPoints(tl, br), outlinePaint);

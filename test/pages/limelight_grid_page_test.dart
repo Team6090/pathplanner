@@ -40,14 +40,14 @@ void main() {
   testWidgets('limelightgrid editor shows when file', (widgetTester) async {
     var fs = MemoryFileSystem();
     fs.directory(deployPath).createSync(recursive: true);
-    LimelightGrid grid = LimelightGrid(
+    LimelightGrid limelightGrid = LimelightGrid(
         fieldSize: const Size(16.54, 8.02),
         nodeSizeMeters: 0.2,
-        grid: List.generate((8.02 / 0.2).ceil(),
+        limelightGrid: List.generate((8.02 / 0.2).ceil(),
             (index) => List.filled((16.54 / 0.2).ceil(), false)));
     fs
         .file(join(deployPath, 'limelightgrid.json'))
-        .writeAsStringSync(jsonEncode(grid));
+        .writeAsStringSync(jsonEncode(limelightGrid));
 
     await widgetTester.pumpWidget(MaterialApp(
       home: Scaffold(
@@ -67,14 +67,14 @@ void main() {
   testWidgets('limelightgrid editor tap', (widgetTester) async {
     var fs = MemoryFileSystem();
     fs.directory(deployPath).createSync(recursive: true);
-    LimelightGrid grid = LimelightGrid(
+    LimelightGrid limelightGrid = LimelightGrid(
         fieldSize: const Size(16.54, 8.02),
         nodeSizeMeters: 0.2,
-        grid: List.generate((8.02 / 0.2).ceil(),
+        limelightGrid: List.generate((8.02 / 0.2).ceil(),
             (index) => List.filled((16.54 / 0.2).ceil(), false)));
     fs
         .file(join(deployPath, 'limelightgrid.json'))
-        .writeAsStringSync(jsonEncode(grid));
+        .writeAsStringSync(jsonEncode(limelightGrid));
 
     await widgetTester.pumpWidget(MaterialApp(
       home: Scaffold(
@@ -92,20 +92,20 @@ void main() {
 
     LimelightGrid editedGrid = LimelightGrid.fromJson(jsonDecode(
         fs.file(join(deployPath, 'limelightgrid.json')).readAsStringSync()));
-    expect(editedGrid, isNot(grid));
+    expect(editedGrid, isNot(limelightGrid));
   });
 
   testWidgets('limelightgrid editor drag', (widgetTester) async {
     var fs = MemoryFileSystem();
     fs.directory(deployPath).createSync(recursive: true);
-    LimelightGrid grid = LimelightGrid(
+    LimelightGrid limelightGrid = LimelightGrid(
         fieldSize: const Size(16.54, 8.02),
         nodeSizeMeters: 0.2,
-        grid: List.generate((8.02 / 0.2).ceil(),
+        limelightGrid: List.generate((8.02 / 0.2).ceil(),
             (index) => List.filled((16.54 / 0.2).ceil(), false)));
     fs
         .file(join(deployPath, 'limelightgrid.json'))
-        .writeAsStringSync(jsonEncode(grid));
+        .writeAsStringSync(jsonEncode(limelightGrid));
 
     await widgetTester.pumpWidget(MaterialApp(
       home: Scaffold(
@@ -131,20 +131,20 @@ void main() {
 
     LimelightGrid editedGrid = LimelightGrid.fromJson(jsonDecode(
         fs.file(join(deployPath, 'limelightgrid.json')).readAsStringSync()));
-    expect(editedGrid, isNot(grid));
+    expect(editedGrid, isNot(limelightGrid));
   });
 
-  testWidgets('edit grid attributes', (widgetTester) async {
+  testWidgets('edit limelightGrid attributes', (widgetTester) async {
     var fs = MemoryFileSystem();
     fs.directory(deployPath).createSync(recursive: true);
-    LimelightGrid grid = LimelightGrid(
+    LimelightGrid limelightGrid = LimelightGrid(
         fieldSize: const Size(16.54, 8.02),
         nodeSizeMeters: 0.2,
-        grid: List.generate((8.02 / 0.2).ceil(),
+        limelightGrid: List.generate((8.02 / 0.2).ceil(),
             (index) => List.filled((16.54 / 0.2).ceil(), false)));
     fs
         .file(join(deployPath, 'limelightgrid.json'))
-        .writeAsStringSync(jsonEncode(grid));
+        .writeAsStringSync(jsonEncode(limelightGrid));
 
     await widgetTester.pumpWidget(MaterialApp(
       home: Scaffold(

@@ -6,42 +6,42 @@ import 'package:pathplanner/widgets/field_image.dart';
 class NavGrid {
   Size fieldSize;
   num nodeSizeMeters;
-  List<List<bool>> grid;
+  List<List<bool>> navGrid;
 
   NavGrid({
     required this.fieldSize,
     required this.nodeSizeMeters,
-    required this.grid,
+    required this.navGrid,
   });
 
   NavGrid.blankGrid({
     required this.nodeSizeMeters,
     required this.fieldSize,
-  }) : grid = [] {
+  }) : navGrid = [] {
     int rows = (fieldSize.height / nodeSizeMeters).ceil();
     int cols = (fieldSize.width / nodeSizeMeters).ceil();
 
-    grid = List.generate(rows, (index) => List.filled(cols, false));
+    navGrid = List.generate(rows, (index) => List.filled(cols, false));
   }
 
   NavGrid.fromJson(Map<String, dynamic> json)
       : fieldSize = _sizeFromJson(json['field_size']),
         nodeSizeMeters = json['nodeSizeMeters'] ?? 0.2,
-        grid = [] {
-    grid = [
-      for (var dynList in json['grid'] ?? [])
+        navGrid = [] {
+    navGrid = [
+      for (var dynList in json['navGrid'] ?? [])
         (dynList as List<dynamic>).map((e) => e as bool).toList(),
     ];
 
     int rows = (fieldSize.height / nodeSizeMeters).ceil();
     int cols = (fieldSize.width / nodeSizeMeters).ceil();
 
-    if (grid.isEmpty ||
-        grid.length != rows ||
-        grid[0].isEmpty ||
-        grid[0].length != cols) {
-      // Grid does not match what it should, replace it with an emptry grid
-      grid = List.generate(rows, (index) => List.filled(cols, false));
+    if (navGrid.isEmpty ||
+        navGrid.length != rows ||
+        navGrid[0].isEmpty ||
+        navGrid[0].length != cols) {
+      // Grid does not match what it should, replace it with an emptry navGrid
+      navGrid = List.generate(rows, (index) => List.filled(cols, false));
     }
   }
 
@@ -52,7 +52,7 @@ class NavGrid {
         'y': fieldSize.height,
       },
       'nodeSizeMeters': nodeSizeMeters,
-      'grid': grid,
+      'navGrid': navGrid,
     };
   }
 
@@ -70,8 +70,8 @@ class NavGrid {
       other.runtimeType == runtimeType &&
       other.fieldSize == fieldSize &&
       other.nodeSizeMeters == nodeSizeMeters &&
-      const DeepCollectionEquality().equals(other.grid, grid);
+      const DeepCollectionEquality().equals(other.navGrid, navGrid);
 
   @override
-  int get hashCode => Object.hash(fieldSize, nodeSizeMeters, grid);
+  int get hashCode => Object.hash(fieldSize, nodeSizeMeters, navGrid);
 }

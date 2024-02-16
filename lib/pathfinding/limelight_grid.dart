@@ -6,42 +6,42 @@ import 'package:pathplanner/widgets/field_image.dart';
 class LimelightGrid {
   Size fieldSize;
   num nodeSizeMeters;
-  List<List<bool>> grid;
+  List<List<bool>> limelightGrid;
 
   LimelightGrid({
     required this.fieldSize,
     required this.nodeSizeMeters,
-    required this.grid,
+    required this.limelightGrid,
   });
 
   LimelightGrid.blankGrid({
     required this.nodeSizeMeters,
     required this.fieldSize,
-  }) : grid = [] {
+  }) : limelightGrid = [] {
     int rows = (fieldSize.height / nodeSizeMeters).ceil();
     int cols = (fieldSize.width / nodeSizeMeters).ceil();
 
-    grid = List.generate(rows, (index) => List.filled(cols, false));
+    limelightGrid = List.generate(rows, (index) => List.filled(cols, false));
   }
 
   LimelightGrid.fromJson(Map<String, dynamic> json)
       : fieldSize = _sizeFromJson(json['field_size']),
         nodeSizeMeters = json['nodeSizeMeters'] ?? 0.2,
-        grid = [] {
-    grid = [
-      for (var dynList in json['grid'] ?? [])
+        limelightGrid = [] {
+    limelightGrid = [
+      for (var dynList in json['limelightgrid'] ?? [])
         (dynList as List<dynamic>).map((e) => e as bool).toList(),
     ];
 
     int rows = (fieldSize.height / nodeSizeMeters).ceil();
     int cols = (fieldSize.width / nodeSizeMeters).ceil();
 
-    if (grid.isEmpty ||
-        grid.length != rows ||
-        grid[0].isEmpty ||
-        grid[0].length != cols) {
-      // Grid does not match what it should, replace it with an emptry grid
-      grid = List.generate(rows, (index) => List.filled(cols, false));
+    if (limelightGrid.isEmpty ||
+        limelightGrid.length != rows ||
+        limelightGrid[0].isEmpty ||
+        limelightGrid[0].length != cols) {
+      // LimelightGrid does not match what it should, replace it with an emptry limelightgrid
+      limelightGrid = List.generate(rows, (index) => List.filled(cols, false));
     }
   }
 
@@ -52,7 +52,7 @@ class LimelightGrid {
         'y': fieldSize.height,
       },
       'nodeSizeMeters': nodeSizeMeters,
-      'grid': grid,
+      'limelightgrid': limelightGrid,
     };
   }
 
@@ -70,8 +70,8 @@ class LimelightGrid {
       other.runtimeType == runtimeType &&
       other.fieldSize == fieldSize &&
       other.nodeSizeMeters == nodeSizeMeters &&
-      const DeepCollectionEquality().equals(other.grid, grid);
+      const DeepCollectionEquality().equals(other.limelightGrid, limelightGrid);
 
   @override
-  int get hashCode => Object.hash(fieldSize, nodeSizeMeters, grid);
+  int get hashCode => Object.hash(fieldSize, nodeSizeMeters, limelightGrid);
 }

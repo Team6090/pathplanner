@@ -70,11 +70,11 @@ class _PivotGridPageState extends State<PivotGridPage> {
                 int col = (x / _grid.nodeSizeMeters).floor();
 
                 if (row >= 0 &&
-                    row < _grid.grid.length &&
+                    row < _grid.pivotGrid.length &&
                     col >= 0 &&
-                    col < _grid.grid[row].length) {
+                    col < _grid.pivotGrid[row].length) {
                   setState(() {
-                    _grid.grid[row][col] = !_grid.grid[row][col];
+                    _grid.pivotGrid[row][col] = !_grid.pivotGrid[row][col];
                   });
 
                   _savePivotGrid();
@@ -88,10 +88,10 @@ class _PivotGridPageState extends State<PivotGridPage> {
                 int col = (x / _grid.nodeSizeMeters).floor();
 
                 if (row >= 0 &&
-                    row < _grid.grid.length &&
+                    row < _grid.pivotGrid.length &&
                     col >= 0 &&
-                    col < _grid.grid[row].length) {
-                  _adding = !_grid.grid[row][col];
+                    col < _grid.pivotGrid[row].length) {
+                  _adding = !_grid.pivotGrid[row][col];
                 }
               },
               onPanUpdate: (details) {
@@ -102,11 +102,11 @@ class _PivotGridPageState extends State<PivotGridPage> {
                 int col = (x / _grid.nodeSizeMeters).floor();
 
                 if (row >= 0 &&
-                    row < _grid.grid.length &&
+                    row < _grid.pivotGrid.length &&
                     col >= 0 &&
-                    col < _grid.grid[row].length) {
+                    col < _grid.pivotGrid[row].length) {
                   setState(() {
-                    _grid.grid[row][col] = _adding;
+                    _grid.pivotGrid[row][col] = _adding;
                   });
                 }
               },
@@ -122,7 +122,7 @@ class _PivotGridPageState extends State<PivotGridPage> {
                       child: CustomPaint(
                         painter: _NavigationPainter(
                           fieldImage: widget.fieldImage,
-                          grid: _grid.grid,
+                          pivotGrid: _grid.pivotGrid,
                           nodeSizeMeters: _grid.nodeSizeMeters,
                         ),
                       ),
@@ -270,13 +270,13 @@ class _NavigationPainter extends CustomPainter {
   final FieldImage fieldImage;
 
   final num nodeSizeMeters;
-  final List<List<bool>> grid;
+  final List<List<bool>> pivotGrid;
 
   static double scale = 1;
 
   _NavigationPainter({
     required this.fieldImage,
-    required this.grid,
+    required this.pivotGrid,
     required this.nodeSizeMeters,
   });
 
@@ -292,8 +292,8 @@ class _NavigationPainter extends CustomPainter {
       ..style = PaintingStyle.fill
       ..color = Colors.red.withOpacity(0.4);
 
-    for (int row = 0; row < grid.length; row++) {
-      for (int col = 0; col < grid[row].length; col++) {
+    for (int row = 0; row < pivotGrid.length; row++) {
+      for (int col = 0; col < pivotGrid[row].length; col++) {
         Offset tl = PathPainterUtil.pointToPixelOffset(
             Point(col * nodeSizeMeters, row * nodeSizeMeters),
             scale,
@@ -303,7 +303,7 @@ class _NavigationPainter extends CustomPainter {
             scale,
             fieldImage);
 
-        if (grid[row][col]) {
+        if (pivotGrid[row][col]) {
           canvas.drawRect(Rect.fromPoints(tl, br), fillPaint);
         }
         canvas.drawRect(Rect.fromPoints(tl, br), outlinePaint);

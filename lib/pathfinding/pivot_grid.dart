@@ -6,42 +6,42 @@ import 'package:pathplanner/widgets/field_image.dart';
 class PivotGrid {
   Size fieldSize;
   num nodeSizeMeters;
-  List<List<bool>> grid;
+  List<List<bool>> pivotGrid;
 
   PivotGrid({
     required this.fieldSize,
     required this.nodeSizeMeters,
-    required this.grid,
+    required this.pivotGrid,
   });
 
   PivotGrid.blankGrid({
     required this.nodeSizeMeters,
     required this.fieldSize,
-  }) : grid = [] {
+  }) : pivotGrid = [] {
     int rows = (fieldSize.height / nodeSizeMeters).ceil();
     int cols = (fieldSize.width / nodeSizeMeters).ceil();
 
-    grid = List.generate(rows, (index) => List.filled(cols, false));
+    pivotGrid = List.generate(rows, (index) => List.filled(cols, false));
   }
 
   PivotGrid.fromJson(Map<String, dynamic> json)
       : fieldSize = _sizeFromJson(json['field_size']),
         nodeSizeMeters = json['nodeSizeMeters'] ?? 0.2,
-        grid = [] {
-    grid = [
-      for (var dynList in json['grid'] ?? [])
+        pivotGrid = [] {
+    pivotGrid = [
+      for (var dynList in json['pivotGrid'] ?? [])
         (dynList as List<dynamic>).map((e) => e as bool).toList(),
     ];
 
     int rows = (fieldSize.height / nodeSizeMeters).ceil();
     int cols = (fieldSize.width / nodeSizeMeters).ceil();
 
-    if (grid.isEmpty ||
-        grid.length != rows ||
-        grid[0].isEmpty ||
-        grid[0].length != cols) {
+    if (pivotGrid.isEmpty ||
+        pivotGrid.length != rows ||
+        pivotGrid[0].isEmpty ||
+        pivotGrid[0].length != cols) {
       // Grid does not match what it should, replace it with an emptry grid
-      grid = List.generate(rows, (index) => List.filled(cols, false));
+      pivotGrid = List.generate(rows, (index) => List.filled(cols, false));
     }
   }
 
@@ -52,7 +52,7 @@ class PivotGrid {
         'y': fieldSize.height,
       },
       'nodeSizeMeters': nodeSizeMeters,
-      'grid': grid,
+      'pivotGrid': pivotGrid,
     };
   }
 
@@ -70,8 +70,8 @@ class PivotGrid {
       other.runtimeType == runtimeType &&
       other.fieldSize == fieldSize &&
       other.nodeSizeMeters == nodeSizeMeters &&
-      const DeepCollectionEquality().equals(other.grid, grid);
+      const DeepCollectionEquality().equals(other.pivotGrid, pivotGrid);
 
   @override
-  int get hashCode => Object.hash(fieldSize, nodeSizeMeters, grid);
+  int get hashCode => Object.hash(fieldSize, nodeSizeMeters, pivotGrid);
 }
