@@ -207,7 +207,7 @@ class _LimelightGridPageState extends State<LimelightGridPage> {
             TextButton(
               onPressed: () async {
                 String fileContent = await DefaultAssetBundle.of(this.context)
-                    .loadString('resources/default_LimelightGrid.json');
+                    .loadString('resources/default_limelightgrid.json');
 
                 setState(() {
                   _grid = LimelightGrid.fromJson(jsonDecode(fileContent));
@@ -261,7 +261,7 @@ class _LimelightGridPageState extends State<LimelightGridPage> {
 
   void _saveLimelightGrid() {
     widget.fs
-        .file(join(widget.deployDirectory.path, 'LimelightGrid.json'))
+        .file(join(widget.deployDirectory.path, 'limelightgrid.json'))
         .writeAsString(jsonEncode(_grid));
   }
 }

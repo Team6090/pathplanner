@@ -36,7 +36,7 @@ class _PivotGridPageState extends State<PivotGridPage> {
     super.initState();
 
     File gridFile =
-        widget.fs.file(join(widget.deployDirectory.path, 'PivotGrid.json'));
+        widget.fs.file(join(widget.deployDirectory.path, 'pivotgrid.json'));
     gridFile.exists().then((value) async {
       if (value) {
         String fileContent = gridFile.readAsStringSync();
@@ -207,7 +207,7 @@ class _PivotGridPageState extends State<PivotGridPage> {
             TextButton(
               onPressed: () async {
                 String fileContent = await DefaultAssetBundle.of(this.context)
-                    .loadString('resources/default_PivotGrid.json');
+                    .loadString('resources/default_pivotgrid.json');
 
                 setState(() {
                   _grid = PivotGrid.fromJson(jsonDecode(fileContent));
@@ -261,7 +261,7 @@ class _PivotGridPageState extends State<PivotGridPage> {
 
   void _savePivotGrid() {
     widget.fs
-        .file(join(widget.deployDirectory.path, 'PivotGrid.json'))
+        .file(join(widget.deployDirectory.path, 'pivotgrid.json'))
         .writeAsString(jsonEncode(_grid));
   }
 }

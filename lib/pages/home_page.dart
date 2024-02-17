@@ -777,7 +777,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     limelightgridFile.exists().then((value) async {
       if (!value) {
         String fileContent = await DefaultAssetBundle.of(this.context)
-        .loadString('resources/default_limelightgrid.json;');
+        .loadString('resources/default_limelightgrid.json');
         fs
         .file(join(_pathplannerDir.path, 'limelightgrid.json'))
         .writeAsString(fileContent);
