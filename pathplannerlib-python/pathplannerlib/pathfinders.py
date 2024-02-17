@@ -64,9 +64,9 @@ class Pathfinder:
 
 
 class RemoteADStar(Pathfinder):
-    _limelightGridJsonPub: StringPublisher
+    #_limelightGridJsonPub: StringPublisher
     _navGridJsonPub: StringPublisher
-    _pivotGridJsonPub: StringPublisher
+    #_pivotGridJsonPub: StringPublisher
     _startPosPub: DoubleArrayPublisher
     _goalPosPub: DoubleArrayPublisher
     _dynamicObstaclePub: DoubleArrayPublisher
@@ -79,9 +79,9 @@ class RemoteADStar(Pathfinder):
     def __init__(self):
         nt = NetworkTableInstance.getDefault()
 
-        self._limelightGridJsonPub = nt.getStingTopic('/PPLibCoprocessor/RemoteADStar/limelightGrid').publish()
+        #self._limelightGridJsonPub = nt.getStingTopic('/PPLibCoprocessor/RemoteADStar/limelightGrid').publish()
         self._navGridJsonPub = nt.getStringTopic('/PPLibCoprocessor/RemoteADStar/navGrid').publish()
-        self._pivotGridJsonPub = nt.getStringTopic('/PPLibCoprocessor/RemoteADStar/pivotGrid').publish()
+        #self._pivotGridJsonPub = nt.getStringTopic('/PPLibCoprocessor/RemoteADStar/pivotGrid').publish()
         self._startPosPub = nt.getDoubleArrayTopic('/PPLibCoprocessor/RemoteADStar/startPos').publish()
         self._goalPosPub = nt.getDoubleArrayTopic('/PPLibCoprocessor/RemoteADStar/goalPos').publish()
         self._dynamicObstaclePub = nt.getDoubleArrayTopic('/PPLibCoprocessor/RemoteADStar/dynamicObstacles').publish()
@@ -93,15 +93,15 @@ class RemoteADStar(Pathfinder):
 
         nt.addListener(self._pathPointsSub, EventFlags.kValueAll, self._handlePathListenerEvent)
         
-        limelightFilePath = os.path.join(getDeployDirectory(), 'pathplanner', 'limelightgrid.json')
+        #limelightFilePath = os.path.join(getDeployDirectory(), 'pathplanner', 'limelightgrid.json')
         navFilePath = os.path.join(getDeployDirectory(), 'pathplanner', 'navgrid.json')
-        pivotFilePath = os.path.join(getDeployDirectory(), 'pathplanner', 'pivotgrid.json')
+        #pivotFilePath = os.path.join(getDeployDirectory(), 'pathplanner', 'pivotgrid.json')
 
-        with open(filePath, 'r') as f:
+        with open(navFilePath, 'r') as f:
             file_content = f.read()
-            self._limelightGridJsonPub.set(file_content)
+            #self._limelightGridJsonPub.set(file_content)
             self._navGridJsonPub.set(file_content)
-            self._pivotGridJsonPub.set(file_content)
+            #self._pivotGridJsonPub.set(file_content)
 
     def _handlePathListenerEvent(self, event):
         pathPointsArr = self._pathPointsSub.get()
@@ -246,7 +246,8 @@ class LocalADStar(Pathfinder):
         self._staticObstacles.clear()
         self._dynamicObstacles.clear()
 
-        try:
+    
+        """try:
             limelightFilePath = os.path.join(getDeployDirectory(), 'pathplanner', 'limelightgrid.json')
 
             with open(filePath, 'r') as f:
@@ -270,12 +271,12 @@ class LocalADStar(Pathfinder):
                 self._fieldWidth = fieldSize['y']
         except:
             # Do nothing, use defaults
-            pass
+            pass"""
 
         try:
             navFilePath = os.path.join(getDeployDirectory(), 'pathplanner', 'navgrid.json')
 
-            with open(filePath, 'r') as f:
+            with open(navFilePath, 'r') as f:
                 navgrid_json = json.loads(f.read())
 
                 self._nodeSize = float(navgrid_json['nodeSizeMeters'])
@@ -298,7 +299,7 @@ class LocalADStar(Pathfinder):
             # Do nothing, use defaults
             pass
 
-        try:
+        """try:
             pivotFilePath = os.path.join(getDeployDirectory(), 'pathplanner', 'pivotgrid.json')
 
             with open(filePath, 'r') as f:
@@ -322,7 +323,7 @@ class LocalADStar(Pathfinder):
                 self._fieldWidth = fieldSize['y']
         except:
             # Do nothing, use defaults
-            pass
+            pass"""
 
         self._requestObstacles.clear()
         self._requestObstacles.update(self._staticObstacles)
