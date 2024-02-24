@@ -175,7 +175,7 @@ class _EventMarkersTreeState extends State<EventMarkersTree> {
           value: markers[markerIdx].waypointRelativePos.toDouble(),
           min: 0.0,
           max: waypoints.length - 1.0,
-          divisions: (waypoints.length - 1) * 20,
+          divisions: (waypoints.length - 1) * 100,
           label: markers[markerIdx].waypointRelativePos.toStringAsFixed(2),
           onChangeStart: (value) {
             _sliderChangeStart = value;
