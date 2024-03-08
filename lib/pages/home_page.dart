@@ -9,10 +9,12 @@ import 'package:macos_secure_bookmarks/macos_secure_bookmarks.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pathplanner/commands/command.dart';
+import 'package:pathplanner/pages/blue_auto_pivot_grid_page.dart';
 import 'package:pathplanner/pages/limelight_grid_page.dart';
 import 'package:pathplanner/pages/nav_grid_page.dart';
 import 'package:pathplanner/pages/pivot_grid_page.dart';
 import 'package:pathplanner/pages/project/project_page.dart';
+import 'package:pathplanner/pages/red_auto_pivot_grid_page.dart';
 import 'package:pathplanner/pages/telemetry_page.dart';
 import 'package:pathplanner/pages/welcome_page.dart';
 import 'package:pathplanner/services/log.dart';
@@ -289,6 +291,112 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         );
       }
 
+      if (!(widget.prefs.getBool(PrefsKeys.seen2024ResetPopup) ?? false) &&
+          _fieldImage?.name != 'Crescendo' &&
+          mounted) {
+        showDialog(
+          context: this.context,
+          barrierDismissible: false,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('New Field Image Available'),
+              content: const SizedBox(
+                width: 400,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                        'The 2024 field image is now available. Would you like to set your field image to the 2024 field and reset the default blueAutoPivotgrid for the 2024 field?'),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    widget.prefs.setBool(PrefsKeys.seen2024ResetPopup, true);
+                  },
+                  child: const Text('No'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    widget.prefs.setBool(PrefsKeys.seen2024ResetPopup, true);
+                    setState(() {
+                      _fieldImage = FieldImage.defaultField;
+                      widget.prefs
+                          .setString(PrefsKeys.fieldImage, _fieldImage!.name);
+                    });
+
+                    // Load default grid
+                    String fileContent =
+                        await DefaultAssetBundle.of(this.context)
+                            .loadString('resources/default_blueautopivotgrid.json');
+                    fs
+                        .file(join(_pathplannerDir.path, 'blueautopivotgrid.json'))
+                        .writeAsString(fileContent);
+                  },
+                  child: const Text('Yes (Recommended)'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+
+      if (!(widget.prefs.getBool(PrefsKeys.seen2024ResetPopup) ?? false) &&
+          _fieldImage?.name != 'Crescendo' &&
+          mounted) {
+        showDialog(
+          context: this.context,
+          barrierDismissible: false,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('New Field Image Available'),
+              content: const SizedBox(
+                width: 400,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                        'The 2024 field image is now available. Would you like to set your field image to the 2024 field and reset the default redAutoPivotgrid for the 2024 field?'),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    widget.prefs.setBool(PrefsKeys.seen2024ResetPopup, true);
+                  },
+                  child: const Text('No'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    widget.prefs.setBool(PrefsKeys.seen2024ResetPopup, true);
+                    setState(() {
+                      _fieldImage = FieldImage.defaultField;
+                      widget.prefs
+                          .setString(PrefsKeys.fieldImage, _fieldImage!.name);
+                    });
+
+                    // Load default grid
+                    String fileContent =
+                        await DefaultAssetBundle.of(this.context)
+                            .loadString('resources/default_redautopivotgrid.json');
+                    fs
+                        .file(join(_pathplannerDir.path, 'redautopivotgrid.json'))
+                        .writeAsString(fileContent);
+                  },
+                  child: const Text('Yes (Recommended)'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+
       if (!(widget.prefs.getBool(PrefsKeys.seen2024Warning) ?? false) &&
           mounted) {
         showDialog(
@@ -463,6 +571,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               label: Text('Pivot Grid'),
             ),
             const NavigationDrawerDestination(
+              icon: Icon(Icons.swipe_down_alt),
+              label: Text('Blue Auto Pivot Grid'),
+            ),
+            const NavigationDrawerDestination(
+              icon: Icon(Icons.swipe_down_alt_outlined),
+              label: Text('Red Auto Pivot Grid'),
+            ),
+            const NavigationDrawerDestination(
               icon: Icon(Icons.camera_alt),
               label: Text('Limelight Grid'),
             ),
@@ -569,6 +685,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   fieldImage: _fieldImage ?? FieldImage.defaultField,
                 ),
                 PivotGridPage(
+                  deployDirectory: _pathplannerDir,
+                  fs: fs,
+                  fieldImage: _fieldImage ?? FieldImage.defaultField,
+                ),
+                BlueAutoPivotGridPage(
+                  deployDirectory: _pathplannerDir,
+                  fs: fs,
+                  fieldImage: _fieldImage ?? FieldImage.defaultField,
+                ),
+                RedAutoPivotGridPage(
                   deployDirectory: _pathplannerDir,
                   fs: fs,
                   fieldImage: _fieldImage ?? FieldImage.defaultField,
@@ -769,6 +895,30 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             .loadString('resources/default_pivotgrid.json');
         fs
             .file(join(_pathplannerDir.path, 'pivotgrid.json'))
+            .writeAsString(fileContent);
+      }
+    });
+
+    File blueautopivotgridFile = fs.file(join(_pathplannerDir.path, 'blueautopivotgrid.json'));
+    blueautopivotgridFile.exists().then((value) async {
+      if (!value) {
+        // Load default grid
+        String fileContent = await DefaultAssetBundle.of(this.context)
+            .loadString('resources/default_blueautopivotgrid.json');
+        fs
+            .file(join(_pathplannerDir.path, 'blueautopivotgrid.json'))
+            .writeAsString(fileContent);
+      }
+    });
+
+    File redautopivotgridFile = fs.file(join(_pathplannerDir.path, 'redautopivotgrid.json'));
+    redautopivotgridFile.exists().then((value) async {
+      if (!value) {
+        // Load default grid
+        String fileContent = await DefaultAssetBundle.of(this.context)
+            .loadString('resources/default_redautopivotgrid.json');
+        fs
+            .file(join(_pathplannerDir.path, 'redautopivotgrid.json'))
             .writeAsString(fileContent);
       }
     });

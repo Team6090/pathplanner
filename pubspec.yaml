@@ -85,6 +85,9 @@ flutter:
     - resources/default_limelightgrid.json
     - resources/default_navgrid.json
     - resources/default_pivotgrid.json
+    - resources/default_blueautopivotgrid.json
+    - resources/default_redautopivotgrid.json
+    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

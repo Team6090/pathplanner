@@ -14,7 +14,11 @@ RemoteADStar::RemoteADStar() {
 	m_navGridJsonPub = nt.GetStringTopic(
 			"/PPLibCoprocessor/RemoteADStar/navGrid").Publish();
 	m_pivotGridJsonPub = nt.GetStringTopic(
-			"/PPLibCoprocessor/RemoteADStar/pivotGrid").Publish();				
+			"/PPLibCoprocessor/RemoteADStar/pivotGrid").Publish();
+	m_blueAutoPivotGridJsonPub = nt.getStringTopic(
+			"PPLibCoprocessor/RemoteADStar/blueautopivotgrid").Publish();
+	m_redAutoPivotGridJsonPub = nt.getStringTopic(
+			"PPLibCoprocessor/RemoteADStar/redautopivotgrid").Publish();				
 	m_startPosPub = nt.GetDoubleArrayTopic(
 			"/PPLibCoprocessor/RemoteADStar/startPos").Publish();
 	m_goalPosPub = nt.GetDoubleArrayTopic(
@@ -52,6 +56,8 @@ RemoteADStar::RemoteADStar() {
 			+ "/pathplanner/limelightgrid.json";
 			+ "/pathplanner/navgrid.json";
 			+ "/pathplanner/pivotgrid.json";
+			+ "/pathplanner/blueautopivotgrid.json";
+			+ "/pathplanner/redautopivotgrid.json";
 
 	std::error_code error_code;
 	std::unique_ptr < wpi::MemoryBuffer > fileBuffer =
@@ -65,6 +71,8 @@ RemoteADStar::RemoteADStar() {
 		m_limelightGridJsonPub.Set(std::string(charBuffer.begin(), charBuffer.end()));
 		m_navGridJsonPub.Set(std::string(charBuffer.begin(), charBuffer.end()));
 		m_pivotGridJsonPub.Set(std::string(charBuffer.begin(), charBuffer.end()));
+		m_blueAutoPivotGridJsonPub.Set(std::string(charBuffer.begin(), charBuffer.end()));
+		m_blueAutPivotGridJsonPub.Set(std::string(charBuffer.begin(), charBuffer.end()));
 	}
 
 	m_newPathAvailable = false;

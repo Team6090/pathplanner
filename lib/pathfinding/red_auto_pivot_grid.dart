@@ -3,45 +3,45 @@ import 'dart:ui';
 import 'package:collection/collection.dart';
 import 'package:pathplanner/widgets/field_image.dart';
 
-class LimelightGrid {
+class RedAutoPivotGrid {
   Size fieldSize;
   num nodeSizeMeters;
-  List<List<bool>> limelightGrid;
+  List<List<bool>> redAutoPivotGrid;
 
-  LimelightGrid({
+  RedAutoPivotGrid({
     required this.fieldSize,
     required this.nodeSizeMeters,
-    required this.limelightGrid,
+    required this.redAutoPivotGrid,
   });
 
-  LimelightGrid.blankGrid({
+  RedAutoPivotGrid.blankGrid({
     required this.nodeSizeMeters,
     required this.fieldSize,
-  }) : limelightGrid = [] {
+  }) : redAutoPivotGrid = [] {
     int rows = (fieldSize.height / nodeSizeMeters).ceil();
     int cols = (fieldSize.width / nodeSizeMeters).ceil();
 
-    limelightGrid = List.generate(rows, (index) => List.filled(cols, false));
+    redAutoPivotGrid = List.generate(rows, (index) => List.filled(cols, false));
   }
 
-  LimelightGrid.fromJson(Map<String, dynamic> json)
+  RedAutoPivotGrid.fromJson(Map<String, dynamic> json)
       : fieldSize = _sizeFromJson(json['field_size']),
         nodeSizeMeters = json['nodeSizeMeters'] ?? 0.2,
-        limelightGrid = [] {
-    limelightGrid = [
-      for (var dynList in json['limelightGrid'] ?? [])
+        redAutoPivotGrid = [] {
+    redAutoPivotGrid = [
+      for (var dynList in json['redAutoPivotGrid'] ?? [])
         (dynList as List<dynamic>).map((e) => e as bool).toList(),
     ];
 
     int rows = (fieldSize.height / nodeSizeMeters).ceil();
     int cols = (fieldSize.width / nodeSizeMeters).ceil();
 
-    if (limelightGrid.isEmpty ||
-        limelightGrid.length != rows ||
-        limelightGrid[0].isEmpty ||
-        limelightGrid[0].length != cols) {
-      // LimelightGrid does not match what it should, replace it with an emptry limelightgrid
-      limelightGrid = List.generate(rows, (index) => List.filled(cols, false));
+    if (redAutoPivotGrid.isEmpty ||
+        redAutoPivotGrid.length != rows ||
+        redAutoPivotGrid[0].isEmpty ||
+        redAutoPivotGrid[0].length != cols) {
+      // Grid does not match what it should, replace it with an emptry grid
+      redAutoPivotGrid = List.generate(rows, (index) => List.filled(cols, false));
     }
   }
 
@@ -52,7 +52,7 @@ class LimelightGrid {
         'y': fieldSize.height,
       },
       'nodeSizeMeters': nodeSizeMeters,
-      'limelightGrid': limelightGrid,
+      'redAutoPivotGrid': redAutoPivotGrid,
     };
   }
 
@@ -66,12 +66,12 @@ class LimelightGrid {
 
   @override
   bool operator ==(Object other) =>
-      other is LimelightGrid &&
+      other is RedAutoPivotGrid &&
       other.runtimeType == runtimeType &&
       other.fieldSize == fieldSize &&
       other.nodeSizeMeters == nodeSizeMeters &&
-      const DeepCollectionEquality().equals(other.limelightGrid, limelightGrid);
+      const DeepCollectionEquality().equals(other.redAutoPivotGrid, redAutoPivotGrid);
 
   @override
-  int get hashCode => Object.hash(fieldSize, nodeSizeMeters, limelightGrid);
+  int get hashCode => Object.hash(fieldSize, nodeSizeMeters, redAutoPivotGrid);
 }

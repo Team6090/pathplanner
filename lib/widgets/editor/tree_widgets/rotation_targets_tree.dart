@@ -224,7 +224,7 @@ class _RotationTargetsTreeState extends State<RotationTargetsTree> {
           value: rotations[targetIdx].waypointRelativePos.toDouble(),
           min: 0.0,
           max: waypoints.length - 1.0,
-          divisions: (waypoints.length - 1) * 20,
+          divisions: (waypoints.length - 1) * 100,
           label: rotations[targetIdx].waypointRelativePos.toStringAsFixed(2),
           onChangeStart: (value) {
             _sliderChangeStart = value;

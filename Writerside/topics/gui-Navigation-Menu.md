@@ -10,6 +10,8 @@ There are currently five pages that can be switched between:
 * [Limelight Grid](gui-Limelight-Grid-Editor.md)
 * [Navigation Grid](gui-Navigation-Grid-Editor.md)
 * [Pivot Grid](gui-Pivot-Grid-Editor.md)
+* [Blue Auto Pivot Grid](gui-Blue-Auto-Pivot-Grid-Editor.md)
+* [Pivot Grid](gui-Red-Auto-Pivot-Grid-Editor.md)
 
 You can change robot code projects by clicking the "Switch Project" button at the top of the navigation menu.
 

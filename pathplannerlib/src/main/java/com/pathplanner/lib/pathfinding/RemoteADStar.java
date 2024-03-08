@@ -23,6 +23,8 @@ public class RemoteADStar implements Pathfinder {
   private final StringPublisher limelightGridJsonPub;
   private final StringPublisher navGridJsonPub;
   private final StringPublisher pivotGridJsonPub;
+  private final StringPublisher blueAutoPivotGridJsonPub;
+  private final StringPublisher redAutoPivotGridJsonPub;
   private final DoubleArrayPublisher startPosPub;
   private final DoubleArrayPublisher goalPosPub;
   private final DoubleArrayPublisher dynamicObsPub;
@@ -40,6 +42,8 @@ public class RemoteADStar implements Pathfinder {
     limelightGridJsonPub = nt.getStringTopic("/PPLibCoprocessor/RemoteADStar/limelightGrid").publish();
     navGridJsonPub = nt.getStringTopic("/PPLibCoprocessor/RemoteADStar/navGrid").publish();
     pivotGridJsonPub = nt.getStringTopic("/PPLibCoprocessor/RemoteADStar/pivotGrid").publish();
+    blueAutoPivotGridJsonPub = nt.getStringTopic("/PPLibCoprocessor/RemoteADStar/blueAutoPivotGrid").publish();
+    redAutoPivotGridJsonPub = nt.getStringTopic("/PPLibCoprocessor/RemoteADStar/redAutoPivotGrid").publish();
     startPosPub = nt.getDoubleArrayTopic("/PPLibCoprocessor/RemoteADStar/startPos").publish();
     goalPosPub = nt.getDoubleArrayTopic("/PPLibCoprocessor/RemoteADStar/goalPos").publish();
     dynamicObsPub =
@@ -80,6 +84,40 @@ public class RemoteADStar implements Pathfinder {
       } catch (Exception e) {
         DriverStation.reportError(
             "RemoteADStar failed to load limelightgrid. Pathfinding will not be functional.", false);
+      }
+    }
+
+    File blueAutoPivotGridFile = new File(Filesystem.getDeployDirectory(), "pathplanner/blueautopivotgrid.json");
+    if (blueAutoPivotGridFile.exists()) {
+      try (BufferedReader br = new BufferedReader(new FileReader(blueAutoPivotGridFile))) {
+        StringBuilder fileContentBuilder = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+          fileContentBuilder.append(line);
+        }
+
+        String fileContent = fileContentBuilder.toString();
+        blueAutoPivotGridJsonPub.set(fileContent);
+      } catch (Exception e) {
+        DriverStation.reportError(
+            "RemoteADStar failed to load blueautopivotgrid. Pathfinding will not be functional.", false);
+      }
+    }
+
+    File redAutoPivotGridFile = new File(Filesystem.getDeployDirectory(), "pathplanner/redautopivotgrid.json");
+    if (redAutoPivotGridFile.exists()) {
+      try (BufferedReader br = new BufferedReader(new FileReader(redAutoPivotGridFile))) {
+        StringBuilder fileContentBuilder = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+          fileContentBuilder.append(line);
+        }
+
+        String fileContent = fileContentBuilder.toString();
+        redAutoPivotGridJsonPub.set(fileContent);
+      } catch (Exception e) {
+        DriverStation.reportError(
+            "RemoteADStar failed to load redautopivotgrid. Pathfinding will not be functional.", false);
       }
     }
 

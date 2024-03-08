@@ -40,6 +40,8 @@ private:
 	nt::StringPublisher m_limelightGridJsonPub;
 	nt::StringPublisher m_navGridJsonPub;
 	nt::StringPublisher m_pivotGridJsonPub;
+	nt::StringPublisher m_blueAutoPivotGridJsonPub;
+	nt::StringPublisher m_redAutoPivotGridJsonPub;
 	nt::DoubleArrayPublisher m_startPosPub;
 	nt::DoubleArrayPublisher m_goalPosPub;
 	nt::DoubleArrayPublisher m_dynamicObsPub;

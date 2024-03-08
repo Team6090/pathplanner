@@ -327,7 +327,7 @@ class _ConstraintZonesTreeState extends State<ConstraintZonesTree> {
               constraintZones[zoneIdx].maxWaypointRelativePos.toDouble(),
           min: 0.0,
           max: waypoints.length - 1.0,
-          divisions: (waypoints.length - 1) * 20,
+          divisions: (waypoints.length - 1) * 100,
           label: constraintZones[zoneIdx]
               .minWaypointRelativePos
               .toStringAsFixed(2),
@@ -358,7 +358,7 @@ class _ConstraintZonesTreeState extends State<ConstraintZonesTree> {
           value: constraintZones[zoneIdx].maxWaypointRelativePos.toDouble(),
           min: 0.0,
           max: waypoints.length - 1.0,
-          divisions: (waypoints.length - 1) * 20,
+          divisions: (waypoints.length - 1) * 100,
           label: constraintZones[zoneIdx]
               .maxWaypointRelativePos
               .toStringAsFixed(2),

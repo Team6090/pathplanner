@@ -34,6 +34,10 @@
                 grid editor</a>
             <a href="gui-Pivot-Grid-Editor.md" summary="Edit the navigation grid used by pathfinding commands to avoid pivoting mechanisms into obstacles">Navigation
                 grid editor</a>    
+            <a href="gui-Blue-Auto-Pivot-Grid-Editor.md" summary="Edit the navigation grid used by pathfinding commands to avoid pivoting mechanisms in restricted areas">Navigation
+                grid editor</a>    
+            <a href="gui-Red-Auto-Pivot-Grid-Editor.md" summary="Edit the navigation grid used by pathfinding commands to avoid pivoting mechanisms in restricted areas">Navigation
+                grid editor</a>    
         </secondary>
 
     </section-starting-page>

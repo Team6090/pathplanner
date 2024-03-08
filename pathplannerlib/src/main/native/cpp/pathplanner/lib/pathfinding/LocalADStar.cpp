@@ -28,6 +28,8 @@ LocalADStar::LocalADStar() : fieldLength(16.54), fieldWidth(8.02), nodeSize(
 			+ "/pathplanner/limelightgrid.json";
 			+ "/pathplanner/navgrid.json";
 			+ "/pathplanner/pivotgrid.json";
+			+ "/pathplanner/blueautopivotgrid.json";
+			+ "/pathplanner/redautopivotgrid.json";
 
 	std::error_code error_code;
 	std::unique_ptr < wpi::MemoryBuffer > fileBuffer =
